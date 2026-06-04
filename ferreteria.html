@@ -1134,9 +1134,175 @@
       .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
       .hero-actions { flex-direction: column; }
     }
+    /* ── INTRO SPLASH ──────────────────────── */
+    #intro-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--blue-deep);
+      overflow: hidden;
+      pointer-events: all;
+    }
+    #intro-splash.hide {
+      animation: splash-exit 0.7s 0.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    @keyframes splash-exit {
+      0%   { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-100%); opacity: 1; }
+    }
+
+    /* grid bg */
+    .splash-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+    /* animated glow */
+    .splash-glow {
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(21,53,201,0.5) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: splash-pulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes splash-pulse {
+      from { transform: scale(0.9); opacity: 0.6; }
+      to   { transform: scale(1.2); opacity: 1; }
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .splash-logo-wrap {
+      opacity: 0;
+      transform: scale(0.7);
+      animation: splash-logo-in 0.6s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes splash-logo-in {
+      to { opacity: 1; transform: scale(1); }
+    }
+    .splash-logo-wrap img {
+      width: 96px; height: 96px;
+      border-radius: 18px;
+      box-shadow: 0 0 0 3px rgba(245,200,0,0.3), 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .splash-name {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: splash-name-in 0.5s 0.55s ease forwards;
+      text-align: center;
+    }
+    @keyframes splash-name-in {
+      to { opacity: 1; transform: none; }
+    }
+    .splash-name strong {
+      display: block;
+      font-family: var(--font-main);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .splash-name span {
+      font-family: var(--font-main);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+
+    .splash-bar-wrap {
+      width: 160px;
+      opacity: 0;
+      animation: splash-name-in 0.4s 0.8s ease forwards;
+    }
+    .splash-bar-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .splash-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--blue-mid), var(--yellow));
+      border-radius: 2px;
+      transition: width 0.05s linear;
+    }
+    .splash-tagline {
+      font-family: var(--font-main);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      opacity: 0;
+      animation: splash-name-in 0.4s 0.9s ease forwards;
+    }
+
+    /* panel wipe — two halves that split open */
+    .splash-panel {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 50%;
+      background: var(--yellow);
+      z-index: 1;
+      transform: scaleX(0);
+    }
+    .splash-panel-l { left: 0; transform-origin: left; animation: panel-in-l 0.5s cubic-bezier(0.76,0,0.24,1) forwards; }
+    .splash-panel-r { right: 0; transform-origin: right; animation: panel-in-r 0.5s cubic-bezier(0.76,0,0.24,1) forwards; }
+    @keyframes panel-in-l { to { transform: scaleX(1); } }
+    @keyframes panel-in-r { to { transform: scaleX(1); } }
+
+    /* on hide, panels wipe out */
+    #intro-splash.hide .splash-panel-l { animation: panel-out-l 0.6s cubic-bezier(0.76,0,0.24,1) forwards; }
+    #intro-splash.hide .splash-panel-r { animation: panel-out-r 0.6s cubic-bezier(0.76,0,0.24,1) forwards; }
+    @keyframes panel-out-l { to { transform: scaleX(0); } }
+    @keyframes panel-out-r { to { transform: scaleX(0); } }
+
+    /* body locked while splash is on */
+    body.splash-active { overflow: hidden; }
   </style>
 </head>
-<body>
+<body class="splash-active">
+
+  <!-- INTRO SPLASH -->
+  <div id="intro-splash">
+    <div class="splash-grid"></div>
+    <div class="splash-glow"></div>
+    <div class="splash-panel-l splash-panel"></div>
+    <div class="splash-panel-r splash-panel"></div>
+    <div class="splash-content">
+      <div class="splash-logo-wrap">
+        <img src="logo.jpg" alt="Global Ferretería" />
+      </div>
+      <div class="splash-name">
+        <strong>Global</strong>
+        <span>Ferretería · Mérida</span>
+      </div>
+      <div class="splash-bar-wrap">
+        <div class="splash-bar-track">
+          <div class="splash-bar-fill" id="splash-bar"></div>
+        </div>
+      </div>
+      <div class="splash-tagline">Desde 1950</div>
+    </div>
+  </div>
 
   <!-- WhatsApp Float -->
   <a href="https://wa.me/584126406493" target="_blank" class="wa-float" aria-label="WhatsApp">
@@ -1624,6 +1790,27 @@
   </footer>
 
   <script>
+    // ── Intro splash ────────────────────────
+    (function() {
+      const splash = document.getElementById('intro-splash');
+      const bar    = document.getElementById('splash-bar');
+      const DURATION = 2200; // ms before hiding
+      const start = performance.now();
+
+      function animateBar(now) {
+        const pct = Math.min((now - start) / (DURATION * 0.75) * 100, 100);
+        bar.style.width = pct + '%';
+        if (pct < 100) requestAnimationFrame(animateBar);
+      }
+      requestAnimationFrame(animateBar);
+
+      setTimeout(() => {
+        splash.classList.add('hide');
+        document.body.classList.remove('splash-active');
+        setTimeout(() => splash.remove(), 1000);
+      }, DURATION);
+    })();
+
     // ── Init Lucide icons ───────────────────
     lucide.createIcons();
 
